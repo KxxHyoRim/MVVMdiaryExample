@@ -1,4 +1,4 @@
-package org.sopt.mvvmdiaryexample
+package org.sopt.mvvmdiaryexample.presentation
 
 import android.content.Intent
 import android.os.Bundle

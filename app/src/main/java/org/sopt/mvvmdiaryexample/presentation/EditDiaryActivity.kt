@@ -1,4 +1,4 @@
-package org.sopt.mvvmdiaryexample
+package org.sopt.mvvmdiaryexample.presentation
 
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
