@@ -32,7 +32,9 @@ class DiaryActivity : AppCompatActivity() {
 
         binding.listDiaries.adapter = DiaryAdapter(::onMemoClick).also { diariesAdapter = it }
         binding.buttonNewDiary.setOnClickListener {
-
+            val intent = Intent(this, EditDiaryActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 
