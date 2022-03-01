@@ -8,6 +8,14 @@
         <variable
             name="memo"
             type="org.sopt.mvvmdiaryexample.domain.Diary" />
+
+        <variable
+            name="bindingString"
+            type="String" />
+
+        <variable
+            name="bindingInteger"
+            type="Integer"/>
     </data>
 
 
@@ -23,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="@string/title"
+            android:text="@{bindingString}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            android:text="@{memo.title}"
             android:ems="10"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +52,7 @@
             android:id="@+id/tv_Date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dateFormat"
+            android:text="@{String.valueOf(bindingInteger)}"
             app:layout_constraintBottom_toTopOf="@+id/et_title"
             app:layout_constraintEnd_toEndOf="@+id/et_title" />
 
@@ -57,11 +66,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_title" />
 
+        <!-- BindingAdapters 사용 -->
         <TextView
             android:id="@+id/tv_length"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/memoMaxLengthFormat"
+            app:createdDate="@{memo.createDate}"
             app:layout_constraintBottom_toTopOf="@+id/et_contents"
             app:layout_constraintEnd_toEndOf="@+id/et_contents" />
 
