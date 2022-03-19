@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import org.sopt.mvvmdiaryexample.data.DiaryMemory
 import org.sopt.mvvmdiaryexample.databinding.ActivityDiaryBinding
 import org.sopt.mvvmdiaryexample.domain.Diary
 import java.util.*
@@ -28,7 +29,10 @@ class DiaryActivity : AppCompatActivity() {
                     else -> showToast("문제가 발생했습니다 : $it")
                 }
             }
+    }
 
+    override fun onResume() {
+        super.onResume()
         initView()
     }
 
@@ -41,41 +45,25 @@ class DiaryActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.listDiaries.adapter = DiaryAdapter(::onMemoClick).also { diariesAdapter = it }
-        /**위 코드는 아래 두 줄을 동시에 실행하는 의미를 가진다
-         * diariesAdapter = DiaryAdapter { onMemoClick(it) }
-         * binding.listDiaries.adapter = diariesAdapter */
-
-        /** 또한, 아래 코드는 동일한 코드이다
-         *  1) binding.listDiaries.adapter = DiaryAdapter(::onMemoClick)
-         *  2) binding.listDiaries.adapter = DiaryAdapter({onMemoClick(it)})
-         *  3) binding.listDiaries.adapter = DiaryAdapter{onMemoClick(it)}  // convention
-         * */
-
         binding.buttonNewDiary.setOnClickListener { deployEditDiaryActivity() }
 
-        diariesAdapter.submitList(STUB_DIARIES) {
-            // ctrl + p
-            // submitList 가 비동기라, 이 작업이 끝나고 실행시키고 싶은 코드를
-            // 이 Scope 에 작성하면 됨
-        }
+        diariesAdapter.submitList(DiaryMemory.getAllDiaries())
+
+//        diariesAdapter.submitList(STUB_DIARIES) {
+//            // ctrl + p
+//            // submitList 가 비동기라, 이 작업이 끝나고 실행시키고 싶은 코드를
+//            // 이 Scope 에 작성하면 됨
+//        }
     }
 
-    private fun onMemoClick(diary: Diary) = deployEditDiaryActivity(diary)
+    private fun onMemoClick(diary: Diary) {
+        return deployEditDiaryActivity(diary)
+    }
 
     private fun deployEditDiaryActivity(diary: Diary? = null) {
         val intent = Intent(this, EditDiaryActivity::class.java).apply {
             putExtra(EditDiaryActivity.KEY_DIARY, diary?.id)
         }
         editDiaryActivityLauncher.launch(intent)
-    }
-
-    companion object {
-        private val STUB_DIARIES = listOf(
-            Diary("0", "제목", "내용", Date()),
-            Diary("1", "제목", "내용", Date()),
-            Diary("2", "제목", "내용", Date()),
-            Diary("3", "제목", "내용", Date()),
-            Diary("4", "제목", "내용", Date()),
-        )
     }
 }
