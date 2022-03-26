@@ -6,16 +6,16 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import org.sopt.mvvmdiaryexample.data.DiaryMemory
 import org.sopt.mvvmdiaryexample.databinding.ActivityDiaryBinding
 import org.sopt.mvvmdiaryexample.domain.Diary
-import java.util.*
 
 class DiaryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDiaryBinding
     private lateinit var diariesAdapter: DiaryAdapter
     private lateinit var editDiaryActivityLauncher: ActivityResultLauncher<Intent>
+    private val diaryViewModel: DiaryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +29,10 @@ class DiaryActivity : AppCompatActivity() {
                     else -> showToast("문제가 발생했습니다 : $it")
                 }
             }
+
+        diaryViewModel.diary.observe(this) {
+            diariesAdapter.submitList(it)
+        }
     }
 
     override fun onResume() {
@@ -47,12 +51,13 @@ class DiaryActivity : AppCompatActivity() {
         binding.listDiaries.adapter = DiaryAdapter(::onMemoClick).also { diariesAdapter = it }
         binding.buttonNewDiary.setOnClickListener { deployEditDiaryActivity() }
 
-        diariesAdapter.submitList(DiaryMemory.getAllDiaries())
+
+//        diariesAdapter.submitList(DiaryMemory.getAllDiaries()) 대신
+        diaryViewModel.loadDiaries()
+
 
 //        diariesAdapter.submitList(STUB_DIARIES) {
-//            // ctrl + p
-//            // submitList 가 비동기라, 이 작업이 끝나고 실행시키고 싶은 코드를
-//            // 이 Scope 에 작성하면 됨
+//            // submitList 가 비동기라, 이 작업이 끝나고 실행시키고 싶은 코드를 이 Scope 에 작성
 //        }
     }
 
