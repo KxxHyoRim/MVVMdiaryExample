@@ -4,14 +4,15 @@ import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 
-class LiveDataTest {
+class LiveDataTest : ViewModel() {
     private val _count = MutableLiveData<Int>()
     val count : LiveData<Int>
-        get() = _count  // 내부에서만 변경 가능하다는 의미(kotlin 공식 컨벤션(
+        get() = _count  // 내부에서만 변경 가능하다는 의미(kotlin 공식 컨벤션)
 
     init {
-        _count.value = 89
+        _count.value = 1
         val count = _count.value    // null 처리 유의
 
         Thread{

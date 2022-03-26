@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MVVMdiaryExample</string>
+    <string name="app_name">MVVMDiary</string>
     <string name="post">작성하기</string>
     <string name="dateFormat">yyyy.MM.dd</string>
     <string name="title">제목</string>
