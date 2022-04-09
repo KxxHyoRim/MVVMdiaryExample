@@ -6,8 +6,8 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class DispatchExecutors(
-    val ioThread: Executor = MainThreadExecutor,
-    val mainThread: Executor = IoThreadExecutor,
+    val ioThread: Executor = IoThreadExecutor,
+    val mainThread: Executor = MainThreadExecutor,
 ) {
     companion object {
         private var instance: DispatchExecutors? = null
@@ -28,6 +28,8 @@ private object MainThreadExecutor : Executor {
     }
 }
 
+// Main Thread 이외의 Thread 라고 IO로 통상적으로 부름
+// Background Thread 에서 코드를 돌릴거다
 private object IoThreadExecutor : Executor {
     private val ioThreadExecutor = Executors.newSingleThreadExecutor()
 
