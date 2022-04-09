@@ -1,27 +1,25 @@
 package org.sopt.mvvmdiaryexample.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.app.Application
+import androidx.lifecycle.*
 import org.sopt.mvvmdiaryexample.data.DiaryMemory
 import org.sopt.mvvmdiaryexample.domain.Diary
-import androidx.lifecycle.ViewModel
+import org.sopt.mvvmdiaryexample.data.dao.DiaryDao
+import org.sopt.mvvmdiaryexample.data.db.DailyDiaryDatabase
+import org.sopt.mvvmdiaryexample.data.entity.DiaryEntity
 
-class DiaryViewModel : ViewModel() {
+class DiaryViewModel(application: Application) : AndroidViewModel(application) {
+    // by ViewModel에서 알아서 해줘서 뷰모델 팩토리 안써도 됨..
 
-    private val _diary = MutableLiveData<List<Diary>>()
-    val diary: LiveData<List<Diary>> = _diary
+    private val diariesDao: DiaryDao = DailyDiaryDatabase.getInstance(application).getDiariesDao()
 
-//    init {
-//        _diary.value = listOf()
-//    }
-
-    fun loadDiaries() {
-        _diary.value = DiaryMemory.getAllDiaries()
+    private val _diaries = MutableLiveData<List<Diary>>()
+    val diaries: LiveData<List<Diary>> = diariesDao.getAllDiaries().map { diaryEntities : List<DiaryEntity> ->
+        diaryEntities.map{
+            Diary(
+                id = it.id, title = it.title, content = it.content, createDate = it.createdDate
+            )
+        }
     }
 
-
-//    override fun onCleared() {
-//        super.onCleared()
-//        // do Something
-//    }
 }

@@ -36,27 +36,38 @@ class DiaryActivity : AppCompatActivity() {
                 }
             }
 
-        val dao = DailyDiaryDatabase.newInstance(this).getDiariesDao()
-        Log.d(TAG, "onCreate: ${dao.getAllDiaries()}")
-        dao.insertDiary(DiaryEntity("room_title", "room_content", Date()))
-        Log.d(TAG, "onCreate: ${dao.getAllDiaries()}")
+        initView()
 
-        val diaryLocalSource = DiaryLocalSource(dao)
+//        val dao = DailyDiaryDatabase.newInstance(this).getDiariesDao()
+//        Log.d(TAG, "onCreate: ${dao.getAllDiaries()}")
+//        dao.insertDiary(DiaryEntity("room_title", "room_content", Date()))
+//        Log.d(TAG, "onCreate: ${dao.getAllDiaries()}")
 
-        val diary = Diary ("1", "2", "3", Date())
+//        val diaryLocalSource = DiaryLocalSource(dao)
+
+//        val diary = Diary ("1", "2", "3", Date())
 
 //        diaryLocalSource.saveDiary(diary = diary,
 //        )
 
-        diaryViewModel.diary.observe(this) {
+        diaryViewModel.diaries.observe(this) {
             diariesAdapter.submitList(it)
         }
+
+        Thread {
+            while (true){
+                Thread.sleep(2_000)
+                DailyDiaryDatabase.getInstance(applicationContext).getDiariesDao().insertDiary(
+                    DiaryEntity("","", Date())
+                )
+            }
+        }.start()
     }
 
-    override fun onResume() {
-        super.onResume()
-        initView()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        initView()
+//    }
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -68,7 +79,7 @@ class DiaryActivity : AppCompatActivity() {
 
         binding.listDiaries.adapter = DiaryAdapter(::onMemoClick).also { diariesAdapter = it }
         binding.buttonNewDiary.setOnClickListener { deployEditDiaryActivity() }
-        diaryViewModel.loadDiaries()
+//        diaryViewModel.loadDiaries()
     }
 
     private fun onMemoClick(diary: Diary) {
