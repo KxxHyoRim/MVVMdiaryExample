@@ -10,8 +10,12 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import org.sopt.mvvmdiaryexample.data.DiaryLocalSource
+import org.sopt.mvvmdiaryexample.data.db.DailyDiaryDatabase
+import org.sopt.mvvmdiaryexample.data.entity.DiaryEntity
 import org.sopt.mvvmdiaryexample.databinding.ActivityDiaryBinding
 import org.sopt.mvvmdiaryexample.domain.Diary
+import java.util.*
 
 class DiaryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDiaryBinding
@@ -31,6 +35,18 @@ class DiaryActivity : AppCompatActivity() {
                     else -> showToast("문제가 발생했습니다 : $it")
                 }
             }
+
+        val dao = DailyDiaryDatabase.newInstance(this).getDiariesDao()
+        Log.d(TAG, "onCreate: ${dao.getAllDiaries()}")
+        dao.insertDiary(DiaryEntity("room_title", "room_content", Date()))
+        Log.d(TAG, "onCreate: ${dao.getAllDiaries()}")
+
+        val diaryLocalSource = DiaryLocalSource(dao)
+
+        val diary = Diary ("1", "2", "3", Date())
+
+//        diaryLocalSource.saveDiary(diary = diary,
+//        )
 
         diaryViewModel.diary.observe(this) {
             diariesAdapter.submitList(it)
@@ -52,15 +68,7 @@ class DiaryActivity : AppCompatActivity() {
 
         binding.listDiaries.adapter = DiaryAdapter(::onMemoClick).also { diariesAdapter = it }
         binding.buttonNewDiary.setOnClickListener { deployEditDiaryActivity() }
-
-
-//        diariesAdapter.submitList(DiaryMemory.getAllDiaries()) 대신
         diaryViewModel.loadDiaries()
-
-
-//        diariesAdapter.submitList(STUB_DIARIES) {
-//            // submitList 가 비동기라, 이 작업이 끝나고 실행시키고 싶은 코드를 이 Scope 에 작성
-//        }
     }
 
     private fun onMemoClick(diary: Diary) {
